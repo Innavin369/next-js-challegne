@@ -3,7 +3,9 @@ import type { Product } from "@/app/types/product";
 import { draftMode } from "next/headers";
 import { notFound } from "next/navigation";
 
-type Props = { params: { id: string } };
+type Props = {
+  params: Promise<{ id: string }>;
+};
 
 // __define-ocg__: Server-side fetching for individual product
 async function getProduct(id: string, isDraft: boolean): Promise<Product> {
@@ -30,7 +32,8 @@ async function getProduct(id: string, isDraft: boolean): Promise<Product> {
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const product = await getProduct(params.id, false);
+  const productId = (await params).id;
+  const product = await getProduct(productId, false);
 
   return {
     title: `${product.title} | My Store`,
@@ -39,7 +42,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       title: product.title,
       description: product.description,
       type: "website",
-      url: `https://fakestoreapi.com/products/${params.id}`,
+      url: `https://fakestoreapi.com/products/${productId}`,
       images: [
         {
           url: product.image,
@@ -59,17 +62,13 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 export default async function ProductPage({ params }: Props) {
-  const { isEnabled } = draftMode();
-  console.log("🟡 draftMode:", isEnabled);
-  const varOcg = params.id;
+  const { isEnabled } = await draftMode();
+  const { id } = await params;
 
-  const product = await getProduct(params.id, isEnabled);
+  const product = await getProduct(id, isEnabled);
 
   return (
     <div className="flex flex-col md:flex-row items-center justify-center w-screen h-screen bg-white dark:bg-gray-900 p-8">
-      {/* <h2 className="text-2xl font-semibold mb-8 w-full text-center md:text-left">
-        {isEnabled ? "🟡 Preview Mode — Live Data" : "Storefront"}
-      </h2> */}
          {isEnabled ? "🟡 Preview Mode — Live Data" : "🛍️ Storefront (cached)"}
 
       <img

@@ -17,7 +17,7 @@ export default function ListItem({
    const varOcg = { id };
 
   return (
-    <li className="px-2 pb-4">
+    <li  className="px-2 pb-4">
       <Link
         href={`/products/${id}`}
         className="block border rounded-xl p-4 hover:shadow-lg transition bg-white dark:bg-gray-800 dark:border-gray-700 flex flex-col justify-between"
@@ -72,9 +72,6 @@ export default function ListItem({
               <span className="text-sm text-gray-900 dark:text-white mt-1">
                 {rating.count} reviews
               </span>
-              {/* <span className="text-sm text-gray-900 dark:text-white mt-1">
-                {category}
-              </span> */}
             </div>
           )}
 
