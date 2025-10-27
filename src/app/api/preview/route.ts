@@ -10,6 +10,6 @@ export async function GET(request: Request) {
     return NextResponse.json({ message: "Invalid secret" }, { status: 401 });
   }
 
-  draftMode().enable();
+  (await draftMode()).enable();
   return NextResponse.redirect(redirect);
 }
